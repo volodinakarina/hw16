@@ -113,15 +113,17 @@ def users():
 
 @app.route('/users/<int:uid>', methods=['GET', 'PUT', 'DELETE'])
 def user(uid: int):
-    user = User.query.get(uid).to_dict()
     if request.method == 'GET':
+        user = User.query.get(uid).to_dict()
         return json.dumps(user), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
     if request.method == 'DELETE':
+        user = Order.query.get(uid)
         db.session.delete(user)
         db.session.commit()
         return '', 204
     if request.method == 'PUT':
+        user = User.query.get(uid)
         user_data = json.loads(request.data)
         user.first_name = user_data["first_name"]
         user.last_name = user_data["last_name"]
@@ -129,6 +131,8 @@ def user(uid: int):
         user.email = user_data["email"]
         user.role = user_data["role"]
         user.phone = user_data["phone"]
+        db.session.add(order)
+        db.session.commit()
         return '', 204
 
 
